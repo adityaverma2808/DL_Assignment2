@@ -8,6 +8,15 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import wandb
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-wp","--wandb_project",help="Project name used to track experiments in Weights & Biases dashboard",default="DL_Assignment_2")
+parser.add_argument("-we","--wandb_entity",help="Wandb Entity used to track experiments in the Weights & Biases dashboard.",default="cs23m008")
+parser.add_argument("-dp","--dataset_path",help="Number of epochs to train neural network.",default="/content/drive/MyDrive/dl-assigment-2/inaturalist_12K/train")
+parser.add_argument("-e","--epochs",help="Number of epochs to train neural network.",choices=['10','20','30'],default=10)
+parser.add_argument("-nf","--num_filters",help="choices: ['16', '32']",choices=['16', '32'],default=32)
+parser.add_argument("-sz","--neurons_dense",help=f"choices: ['32', '128', '512', '1024']",choices=['32', '128', '512', '1024'],default=512)
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -21,6 +30,7 @@ hyperparameter_defaults= {
               "batch_size":128, # Batch size for training
               "drop_out":0.3 # Dropout probability
 }
+dataset_url = "/content/drive/MyDrive/dl-assigment-2/inaturalist_12K/train"
 def train_val_dataset(dataset, val_split=0.1):
     """
     Split the dataset into train and validation subsets.
@@ -78,7 +88,6 @@ def createDataLoader():
         transforms.ToTensor(), # Convert to tensor
         ])
     # Define the directory containing the dataset
-    dataset_url = "/content/drive/MyDrive/dl-assigment-2/inaturalist_12K/train"
     # Load the image data with different transformations
     img_data = torchvision.datasets.ImageFolder(root= dataset_url,  transform=transform_train)
     img_data_hori= torchvision.datasets.ImageFolder(root= dataset_url,  transform=transform_horizontal)
